@@ -92,7 +92,7 @@ def test_submit_assignment5_student_1(client, h_student_1):
     assert data['state'] == 'SUBMITTED'
     assert data['teacher_id'] == 1
 
-def test_assingment_resubmitt_error(client, h_student_1):
+def test_assignment_resubmit_error(client, h_student_1):
     response = client.post(
         '/student/assignments/submit',
         headers=h_student_1,
