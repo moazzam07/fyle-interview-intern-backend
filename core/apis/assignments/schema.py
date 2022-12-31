@@ -24,13 +24,36 @@ class AssignmentSchema(SQLAlchemyAutoSchema):
         # pylint: disable=unused-argument,no-self-use
         return Assignment(**data_dict)
 
-
 class AssignmentSubmitSchema(Schema):
     class Meta:
         unknown = EXCLUDE
 
     id = fields.Integer(required=True, allow_none=False)
     teacher_id = fields.Integer(required=True, allow_none=False)
+
+    @post_load
+    def initiate_class(self, data_dict, many, partial):
+        # pylint: disable=unused-argument,no-self-use
+        return GeneralObject(**data_dict)
+
+class AssignmentGradeSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    id = fields.Integer(required=True, allow_none=False)
+    grade = fields.String(required=True, allow_none=False)
+
+    @post_load
+    def initiate_class(self, data_dict, many, partial):
+        # pylint: disable=unused-argument,no-self-use
+        return GeneralObject(**data_dict)
+
+class ErrorSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
+    id = fields.Integer(required=True, allow_none=False)
+    error = fields.String(required=True, allow_none=False)
 
     @post_load
     def initiate_class(self, data_dict, many, partial):
