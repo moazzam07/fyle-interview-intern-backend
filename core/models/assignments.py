@@ -85,9 +85,11 @@ class Assignment(db.Model):
     @classmethod
     def graded(cls, _id, grade, principal: Principal):
         
-        assertions.assert_valid(grade is GradeEnum, 'Grade is not valid')
+        assertions.assert_valid(grade in GradeEnum._value2member_map_, 'Grade is not valid')
+
         assignment = Assignment.get_by_id(_id)
-        assertions.assert_found(assignment, 'No assignment with this id was found')
+        assertions.assert_valid(assignment.teacher_id == principal.teacher_id, 'This assignment is submitted to other teacher')
+        assertions.assert_valid(assignment.state == AssignmentStateEnum.SUBMITTED,'only a Submitted assignment can be graded')
 
         assignment.grade = grade
         assignment.state = AssignmentStateEnum.GRADED
@@ -96,9 +98,10 @@ class Assignment(db.Model):
         return assignment
 
     @classmethod
-    def get_teacher_by_assignment(cls, id):
-        assignment = Assignment.get_by_id(id)
+    def get_teacher_by_assignment(cls, _id):
+        assignment = Assignment.get_by_id(_id)
+
         assertions.assert_found(assignment, 'No assignment with this id was found')
-                
-        return assignment
+        
+
     

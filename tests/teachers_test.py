@@ -25,6 +25,42 @@ def test_get_assignments_teacher_2(client, h_teacher_2):
         assert assignment['teacher_id'] == 2
         assert assignment['state'] == 'SUBMITTED'
 
+def test_grade_assignment(client, h_teacher_1):
+    """
+    Grade an Assignment which is submitted to teacher 1
+    """
+    response = client.post(
+        '/teacher/assignments/grade',
+        headers=h_teacher_1,
+        json={
+            "id": 1,
+            "grade": "A"
+        }
+    )
+
+    assert response.status_code == 200
+    data = response.json['data']
+
+    assert data['teacher_id'] == 1
+    assert data['state'] == 'GRADED'
+
+def test_grade_assignment_graded(client, h_teacher_1):
+    """
+    Grade an Assignment which is submitted to teacher 1
+    """
+    response = client.post(
+        '/teacher/assignments/grade',
+        headers=h_teacher_1,
+        json={
+            "id": 1,
+            "grade": "A"
+        }
+    )
+
+    error_response = response.json
+    assert response.status_code == 400
+    assert error_response['error'] == 'FyleError'
+    assert error_response["message"] == 'only a Submitted assignment can be graded'
 
 def test_grade_assignment_cross(client, h_teacher_2):
     """

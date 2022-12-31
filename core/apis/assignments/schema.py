@@ -48,14 +48,3 @@ class AssignmentGradeSchema(Schema):
         # pylint: disable=unused-argument,no-self-use
         return GeneralObject(**data_dict)
 
-class ErrorSchema(Schema):
-    class Meta:
-        unknown = EXCLUDE
-
-    id = fields.Integer(required=True, allow_none=False)
-    error = fields.String(required=True, allow_none=False)
-
-    @post_load
-    def initiate_class(self, data_dict, many, partial):
-        # pylint: disable=unused-argument,no-self-use
-        return GeneralObject(**data_dict)

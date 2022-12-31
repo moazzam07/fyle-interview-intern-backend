@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response, jsonify
+from flask import Blueprint
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
@@ -6,7 +6,7 @@ from core.libs import assertions
 from core.models.assignments import Assignment
 
 
-from .schema import AssignmentGradeSchema, AssignmentSchema, ErrorSchema
+from .schema import AssignmentGradeSchema, AssignmentSchema
 teacher_assignments_resources = Blueprint('teacher_assignments_resources', __name__)
 
 @teacher_assignments_resources.route('/assignments', methods=['GET'], strict_slashes=False)
@@ -21,14 +21,12 @@ def list_assignments(p):
 @decorators.accept_payload
 @decorators.auth_principal
 def grade_assignment(p, incoming_payload):
+    """Grade an assignment"""
     grade_assignment_payload = AssignmentGradeSchema().load(incoming_payload)
     
     assignment_id=grade_assignment_payload.id
-    assignment=Assignment.get_teacher_by_assignment(assignment_id)
-    assertions.assert_found(assignment)
+    Assignment.get_teacher_by_assignment(assignment_id)
     
-    assertions.assert_valid(assignment.teacher_id is p.teacher_id)
-
     graded_assignment = Assignment.graded(
         _id=grade_assignment_payload.id,
         grade=grade_assignment_payload.grade,
